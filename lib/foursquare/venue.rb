@@ -80,7 +80,7 @@ module Foursquare
     end
     
     # https://developer.foursquare.com/docs/venues/photos.html
-    def all_photos(options={:group => "venue"})
+    def all_photos(options={:group => "venue", :v => "20120814"}})
       @foursquare.get("venues/#{id}/photos", options)["photos"]["items"].map do |item|
         Foursquare::Photo.new(@foursquare, item)
       end
