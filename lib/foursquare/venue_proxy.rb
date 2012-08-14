@@ -33,7 +33,8 @@ module Foursquare
     private
 
     def search_group(name, options)
-      response = @foursquare.get('venues/search', options)["groups"].detect { |group| group["type"] == name }
+      #response = @foursquare.get('venues/search', options)["groups"].detect { |group| group["type"] == name }
+      response = @foursquare.get('venues/search', options)
       response ? response["items"].map do |json|
         Foursquare::Venue.new(@foursquare, json)
       end : []
