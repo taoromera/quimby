@@ -5,23 +5,23 @@ module Foursquare
     end
 
     def id
-      @json["id"]
+      @json["id"] == nil ? nil : @json["id"]
     end
 
     def name
-      @json["name"]
+      @json["name"] == nil ? nil : @json["name"]
     end
 
     def created_at
-      @json["createdAt"]
+      @json["createdAt"] == nil ? nil : @json["createdAt"]
     end
 
     def url
-      @json["url"]
+      @json["url"] == nil ? nil : @json["url"]
     end
 
     def sizes
-      @json["sizes"]
+      @json["sizes"] == nil ? nil : @json["sizes"]
     end
     
     def square_300

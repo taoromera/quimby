@@ -31,18 +31,25 @@ module Foursquare
 
     def get(path, params={})
       params = camelize(params)
-      Foursquare.log("GET #{API + path}")
-      Foursquare.log("PARAMS: #{params.inspect}")
+      #Foursquare.log("GET #{API + path}")
+      #Foursquare.log("PARAMS: #{params.inspect}")
       merge_auth_params(params)
-      response = JSON.parse(Typhoeus::Request.get(API + path, :params => params).body)
+      begin
+        response = JSON.parse(Typhoeus::Request.get(API + path, :params => params).body)
+      rescue
+        response = nil
+      end
       Foursquare.log(response.inspect)
+      if response == nil
+        return nil
+      end
       error(response) || response["response"]
     end
 
     def post(path, params={})
       params = camelize(params)
-      Foursquare.log("POST #{API + path}")
-      Foursquare.log("PARAMS: #{params.inspect}")
+      #Foursquare.log("POST #{API + path}")
+      #Foursquare.log("PARAMS: #{params.inspect}")
       merge_auth_params(params)
       response = JSON.parse(Typhoeus::Request.post(API + path, :params => params).body)
       Foursquare.log(response.inspect)
@@ -116,11 +123,17 @@ module Foursquare
         error_type = response['meta']['errorType']
         case error_type
         when "invalid_auth"
-          raise Foursquare::InvalidAuth.new(Foursquare::ERRORS[error_type])
+          #raise Foursquare::InvalidAuth.new(Foursquare::ERRORS[error_type])
+          Foursquare.log('ERROR: InvalidAuth')
+          nil
         when "server_error"
-          raise Foursquare::ServiceUnavailable.new(Foursquare::ERRORS[error_type])
+          #raise Foursquare::ServiceUnavailable.new(Foursquare::ERRORS[error_type])
+          Foursquare.log('ERROR: Service Unavailable')
+          nil
         else
-          raise Foursquare::Error.new(Foursquare::ERRORS[error_type])
+          #raise Foursquare::Error.new(Foursquare::ERRORS[error_type])
+          Foursquare.log('ERROR: Unknown')
+          nil
         end
       end
     end

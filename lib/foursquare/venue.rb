@@ -12,19 +12,19 @@ module Foursquare
     end
 
     def id
-      @json["id"]
+      @json["id"] == nil ? nil : @json["id"]
     end
 
     def name
-      @json["name"]
+      @json["name"] == nil ? nil : @json["name"]
     end
 
     def contact
-      @json["contact"]
+      @json["contact"] == nil ? nil : @json["contact"]
     end
 
     def location
-      Foursquare::Location.new(@json["location"])
+      @json["location"] == nil ? nil : Foursquare::Location.new(@json["location"])
     end
 
     def categories
@@ -32,7 +32,7 @@ module Foursquare
     end
 
     def verified?
-      @json["verified"]
+      @json["verified"] == nil ? nil : @json["verified"]
     end
 
     def checkins_count
@@ -48,7 +48,7 @@ module Foursquare
     end
     
     def stats
-      @json["stats"]
+      @json["stats"] == nil ? nil : @json["stats"]
     end
     
     def primary_category
@@ -63,11 +63,11 @@ module Foursquare
     end
     
     def short_url
-      @json["shortUrl"]
+      @json["shortUrl"] == nil ? nil : @json["shortUrl"]
     end
     
     def photos_count
-      @json["photos"]["count"]
+      @json["photos"]["count"] == nil ? nil : @json["photos"]["count"]
     end
     
     # not all photos may be present here (but we try to avoid one extra API call)
@@ -80,9 +80,14 @@ module Foursquare
     end
     
     # https://developer.foursquare.com/docs/venues/photos.html
-    def all_photos(options={:group => "venue", :v => "20120814"})
-      @foursquare.get("venues/#{id}/photos", options)["photos"]["items"].map do |item|
-        Foursquare::Photo.new(@foursquare, item)
+    def all_photos(options={:group => "venue", :v => "20120608"})
+      begin
+        photos = @foursquare.get("venues/#{id}/photos", options)["photos"]["items"]
+        photos.map do |item|
+          Foursquare::Photo.new(@foursquare, item)
+        end
+      rescue
+        return nil
       end
     end
     
